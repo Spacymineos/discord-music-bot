@@ -120,13 +120,21 @@ pnpm prisma migrate deploy
 pnpm prisma generate
 ```
 
-5. **Start Lavalink**
+5. **Download Lavalink**
+```bash
+cd apps/lavalink
+# Download the latest Lavalink.jar from GitHub releases
+# https://github.com/lavalink-devs/Lavalink/releases
+# Place Lavalink.jar in apps/lavalink/
+```
+
+6. **Start Lavalink**
 ```bash
 cd apps/lavalink
 java -jar Lavalink.jar
 ```
 
-6. **Start the development servers**
+7. **Start the development servers**
 ```bash
 # From the root directory
 pnpm dev
