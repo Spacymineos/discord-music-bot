@@ -1,0 +1,263 @@
+import { FastifyPluginAsync } from 'fastify'
+import fp from 'fastify-plugin'
+import playdl from 'play-dl'
+import YouTube from 'youtube-sr'
+import {
+    joinVoiceChannel,
+    createAudioPlayer,
+    createAudioResource,
+    AudioPlayerStatus,
+    VoiceConnectionStatus,
+    entersState,
+} from '@discordjs/voice'
+
+interface Track {
+    title: string
+    author: string
+    url: string
+    duration: number
+    thumbnail: string
+    identifier: string
+    requester: { userId: string }
+}
+
+interface QueueItem extends Track {
+    stream?: any
+}
+
+class MusicPlayer {
+    guildId: string
+    textChannelId: string
+    voiceChannelId: string
+    connection: any
+    player: any
+    queue: QueueItem[] = []
+    current: QueueItem | null = null
+    volume: number = 50
+    paused: boolean = false
+    playing: boolean = false
+    position: number = 0
+    loop: 'none' | 'track' | 'queue' = 'none'
+    private positionInterval?: NodeJS.Timeout
+
+    constructor(options: { guildId: string; textId: string; voiceId: string; volume?: number }) {
+        this.guildId = options.guildId
+        this.textChannelId = options.textId
+        this.voiceChannelId = options.voiceId
+        this.volume = options.volume || 50
+        this.player = createAudioPlayer()
+
+        this.player.on(AudioPlayerStatus.Playing, () => {
+            this.playing = true
+            this.paused = false
+            this.startPositionTracking()
+        })
+
+        this.player.on(AudioPlayerStatus.Paused, () => {
+            this.paused = true
+            this.playing = false
+            this.stopPositionTracking()
+        })
+
+        this.player.on(AudioPlayerStatus.Idle, () => {
+            this.playing = false
+            this.position = 0
+            this.stopPositionTracking()
+            this.playNext()
+        })
+    }
+
+    private startPositionTracking() {
+        this.stopPositionTracking()
+        this.positionInterval = setInterval(() => {
+            if (this.playing && !this.paused) {
+                this.position += 1000
+            }
+        }, 1000)
+    }
+
+    private stopPositionTracking() {
+        if (this.positionInterval) {
+            clearInterval(this.positionInterval)
+            this.positionInterval = undefined
+        }
+    }
+
+    async connect(guild: any) {
+        const channel = guild.channels.cache.get(this.voiceChannelId)
+        if (!channel) throw new Error('Voice channel not found')
+
+        this.connection = joinVoiceChannel({
+            channelId: this.voiceChannelId,
+            guildId: this.guildId,
+            adapterCreator: guild.voiceAdapterCreator,
+        })
+
+        this.connection.subscribe(this.player)
+        await entersState(this.connection, VoiceConnectionStatus.Ready, 30_000)
+    }
+
+    add(track: Track) {
+        this.queue.push(track as QueueItem)
+    }
+
+    async play() {
+        if (this.queue.length === 0) {
+            this.playing = false
+            return
+        }
+
+        const track = this.queue.shift()
+        if (!track) return
+
+        this.current = track
+        this.position = 0
+
+        try {
+            const stream = await playdl.stream(track.url)
+            const resource = createAudioResource(stream.stream, {
+                inputType: stream.type,
+                inlineVolume: true,
+            })
+            resource.volume?.setVolume(this.volume / 100)
+
+            this.player.play(resource)
+        } catch (error) {
+            console.error('Failed to play track:', error)
+            this.playNext()
+        }
+    }
+
+    private async playNext() {
+        if (this.loop === 'track' && this.current) {
+            this.queue.unshift(this.current)
+        } else if (this.loop === 'queue' && this.current) {
+            this.queue.push(this.current)
+        }
+
+        this.current = null
+        await this.play()
+    }
+
+    pause() {
+        if (this.player.state.status === AudioPlayerStatus.Playing) {
+            this.player.pause()
+            return true
+        } else if (this.player.state.status === AudioPlayerStatus.Paused) {
+            this.player.unpause()
+            return true
+        }
+        return false
+    }
+
+    skip() {
+        this.player.stop()
+    }
+
+    setVolume(volume: number) {
+        this.volume = Math.max(0, Math.min(100, volume))
+        if (this.player.state.status === AudioPlayerStatus.Playing) {
+            const resource = this.player.state.resource
+            if (resource?.volume) {
+                resource.volume.setVolume(this.volume / 100)
+            }
+        }
+    }
+
+    setLoop(mode: 'none' | 'track' | 'queue') {
+        this.loop = mode
+    }
+
+    shuffle() {
+        for (let i = this.queue.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1))
+                ;[this.queue[i], this.queue[j]] = [this.queue[j], this.queue[i]]
+        }
+    }
+
+    destroy() {
+        this.stopPositionTracking()
+        this.player.stop()
+        this.connection?.destroy()
+        this.queue = []
+        this.current = null
+    }
+}
+
+class MusicManager {
+    players: Map<string, MusicPlayer> = new Map()
+
+    async search(query: string, options: { requester: { userId: string } }) {
+        try {
+            const isUrl = query.startsWith('http')
+            let results
+
+            if (isUrl) {
+                // Handle direct URL
+                const info = await playdl.video_info(query)
+                results = [info.video_details]
+            } else {
+                // Search YouTube
+                results = await YouTube.search(query, { limit: 10, type: 'video' })
+            }
+
+            const tracks = results.map((video: any) => ({
+                title: video.title,
+                author: video.channel?.name || video.author || 'Unknown',
+                url: video.url,
+                duration: video.durationInSec ? video.durationInSec * 1000 : video.duration * 1000,
+                thumbnail: video.thumbnail?.url || video.thumbnails?.[0]?.url || null,
+                identifier: video.id,
+                requester: options.requester,
+            }))
+
+            return {
+                type: results.length > 1 ? 'SEARCH' : 'TRACK',
+                tracks,
+            }
+        } catch (error) {
+            console.error('Search error:', error)
+            return { type: 'SEARCH', tracks: [] }
+        }
+    }
+
+    async createPlayer(options: { guildId: string; textId: string; voiceId: string; volume?: number }) {
+        let player = this.players.get(options.guildId)
+        if (!player) {
+            player = new MusicPlayer(options)
+            this.players.set(options.guildId, player)
+        }
+        return player
+    }
+
+    getPlayer(guildId: string) {
+        return this.players.get(guildId)
+    }
+
+    destroyPlayer(guildId: string) {
+        const player = this.players.get(guildId)
+        if (player) {
+            player.destroy()
+            this.players.delete(guildId)
+        }
+    }
+}
+
+const musicPlugin: FastifyPluginAsync = async (fastify) => {
+    const manager = new MusicManager()
+
+    fastify.decorate('music', manager)
+
+    fastify.log.info('YouTube Music system initialized')
+}
+
+export default fp(musicPlugin, {
+    name: 'youtube-music',
+    dependencies: ['discord'],
+})
+
+declare module 'fastify' {
+    interface FastifyInstance {
+        music: MusicManager
+    }
+}

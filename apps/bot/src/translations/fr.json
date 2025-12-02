@@ -1,0 +1,57 @@
+{
+    "common": {
+        "error": "❌ Une erreur est survenue",
+        "success": "✅ Succès",
+        "warning": "⚠️ Attention",
+        "info": "ℹ️ Info",
+        "footer": "Demandé par {user}"
+    },
+    "errors": {
+        "no_voice": "❌ Vous devez être dans un salon vocal !",
+        "no_permission": "❌ Je n'ai pas la permission de rejoindre votre salon vocal !",
+        "no_results": "❌ Aucun résultat trouvé pour `{query}`",
+        "no_player": "❌ Rien n'est joué actuellement !",
+        "generic": "❌ Quelque chose s'est mal passé : {error}"
+    },
+    "commands": {
+        "play": {
+            "added": "✅ Ajouté à la file d'attente",
+            "description": "Joue une chanson depuis YouTube ou SoundCloud",
+            "searching": "🔍 Recherche de `{query}`..."
+        },
+        "pause": {
+            "paused": "⏸️ Mis en pause",
+            "resumed": "▶️ Repris",
+            "description": "Met en pause ou reprend la lecture"
+        },
+        "skip": {
+            "skipped": "⏭️ Passé",
+            "description": "Passe la chanson actuelle"
+        },
+        "stop": {
+            "stopped": "⏹️ Arrêté",
+            "description": "Arrête la lecture et vide la file d'attente"
+        },
+        "queue": {
+            "title": "📝 File d'attente actuelle",
+            "empty": "La file d'attente est vide",
+            "description": "Affiche la file d'attente actuelle"
+        },
+        "nowplaying": {
+            "title": "🎵 Lecture en cours",
+            "description": "Affiche la chanson en cours de lecture"
+        },
+        "volume": {
+            "set": "🔊 Volume réglé à `{volume}%`",
+            "description": "Règle le volume du lecteur"
+        }
+    },
+    "music": {
+        "track": {
+            "artist": "🎤 Artiste",
+            "duration": "⏱️ Durée",
+            "position": "📊 Position",
+            "requested_by": "👤 Demandé par"
+        }
+    }
+}

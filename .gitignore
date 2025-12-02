@@ -1,38 +1,222 @@
-# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+# ==========================================
+# NODE & PACKAGE MANAGERS
+# ==========================================
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+.pnpm-store/
+.npm/
+.yarn/
+*.tgz
 
-# Dependencies
-node_modules
-.pnp
-.pnp.js
-
-# Local env files
+# ==========================================
+# ENVIRONMENT & SECRETS
+# ==========================================
 .env
+.env.*
 .env.local
 .env.development.local
 .env.test.local
 .env.production.local
+!.env.example
+*.pem
+*.key
+*.cert
 
-# Testing
-coverage
+# ==========================================
+# BUILD OUTPUT
+# ==========================================
+dist/
+build/
+out/
+.next/
+.turbo/
+*.build
+*.js.map
 
-# Turbo
-.turbo
+# ==========================================
+# TYPESCRIPT
+# ==========================================
+*.tsbuildinfo
+.tsbuildinfo
 
-# Vercel
-.vercel
-
-# Build Outputs
+# ==========================================
+# NEXT.JS
+# ==========================================
 .next/
 out/
-build
-dist
+next-env.d.ts
+.vercel
 
+# ==========================================
+# DATABASE
+# ==========================================
+*.db
+*.db-shm
+*.db-wal
+*.sqlite
+*.sqlite3
+prisma/migrations/
+!prisma/migrations/.gitkeep
 
-# Debug
+# ==========================================
+# LOGS
+# ==========================================
+logs/
+*.log
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
 
-# Misc
+# ==========================================
+# LAVALINK
+# ==========================================
+apps/lavalink/logs/
+apps/lavalink/*.log
+*.jar
+
+# ==========================================
+# OPERATING SYSTEM
+# ==========================================
+# macOS
 .DS_Store
-*.pem
+.AppleDouble
+.LSOverride
+._*
+.DocumentRevisions-V100
+.fseventsd
+.Spotlight-V100
+.TemporaryItems
+.Trashes
+.VolumeIcon.icns
+.com.apple.timemachine.donotpresent
+
+# Windows
+Thumbs.db
+Thumbs.db:encryptable
+ehthumbs.db
+ehthumbs_vista.db
+Desktop.ini
+$RECYCLE.BIN/
+*.cab
+*.msi
+*.msix
+*.msm
+*.msp
+*.lnk
+
+# Linux
+*~
+.fuse_hidden*
+.directory
+.Trash-*
+.nfs*
+
+# ==========================================
+# IDE & EDITORS
+# ==========================================
+# VSCode
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+*.code-workspace
+
+# JetBrains IDEs
+.idea/
+*.iml
+*.ipr
+*.iws
+.idea_modules/
+out/
+
+# Sublime Text
+*.sublime-workspace
+*.sublime-project
+
+# Vim
+[._]*.s[a-v][a-z]
+[._]*.sw[a-p]
+[._]s[a-rt-v][a-z]
+[._]ss[a-gi-z]
+[._]sw[a-p]
+Session.vim
+Sessionx.vim
+.netrwhist
+
+# Emacs
+*~
+\#*\#
+/.emacs.desktop
+/.emacs.desktop.lock
+*.elc
+auto-save-list
+tramp
+
+# ==========================================
+# TESTING & COVERAGE
+# ==========================================
+coverage/
+*.lcov
+.nyc_output/
+lib-cov/
+.grunt/
+.lock-wscript
+.cache/
+
+# ==========================================
+# TEMPORARY FILES
+# ==========================================
+*.swp
+*.swo
+*.tmp
+*.temp
+.cache/
+.temp/
+tmp/
+
+# ==========================================
+# MISC
+# ==========================================
+.eslintcache
+.stylelintcache
+.parcel-cache/
+.vite/
+*.orig
+.history/
+.yarn/cache
+.yarn/unplugged
+.yarn/build-state.yml
+.yarn/install-state.gz
+
+# ==========================================
+# MONOREPO SPECIFIC
+# ==========================================
+# Turborepo
+.turbo
+
+# PNPM
+.pnpm-debug.log
+.pnpm-store/
+
+# ==========================================
+# DEPLOYMENT
+# ==========================================
+.vercel
+.netlify
+.serverless/
+
+# ==========================================
+# SENTRY
+# ==========================================
+.sentryclirc
+
+# ==========================================
+# CUSTOM PROJECT SPECIFIC
+# ==========================================
+# Add any project-specific ignores below

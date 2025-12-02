@@ -1,0 +1,10 @@
+{
+    "name": "lavalink",
+    "scripts": {
+        "dev": "\"C:\\Users\\Amineos\\.jdks\\corretto-21.0.6\\bin\\java.exe\" -jar Lavalink.jar",
+        "build": "echo 'Download Lavalink.jar'"
+    },
+    "devDependencies": {
+        "@types/node": "latest"
+    }
+}

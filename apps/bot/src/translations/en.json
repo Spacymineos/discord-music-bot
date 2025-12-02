@@ -1,0 +1,57 @@
+{
+    "common": {
+        "error": "❌ An error occurred",
+        "success": "✅ Success",
+        "warning": "⚠️ Warning",
+        "info": "ℹ️ Info",
+        "footer": "Requested by {user}"
+    },
+    "errors": {
+        "no_voice": "❌ You need to be in a voice channel!",
+        "no_permission": "❌ I don't have permission to join your voice channel!",
+        "no_results": "❌ No results found for `{query}`",
+        "no_player": "❌ Nothing is playing right now!",
+        "generic": "❌ Something went wrong: {error}"
+    },
+    "commands": {
+        "play": {
+            "added": "✅ Added to Queue",
+            "description": "Plays a song from YouTube or SoundCloud",
+            "searching": "🔍 Searching for `{query}`..."
+        },
+        "pause": {
+            "paused": "⏸️ Paused",
+            "resumed": "▶️ Resumed",
+            "description": "Pauses or resumes the current track"
+        },
+        "skip": {
+            "skipped": "⏭️ Skipped",
+            "description": "Skips the current track"
+        },
+        "stop": {
+            "stopped": "⏹️ Stopped",
+            "description": "Stops playback and clears the queue"
+        },
+        "queue": {
+            "title": "📝 Current Queue",
+            "empty": "The queue is empty",
+            "description": "Shows the current queue"
+        },
+        "nowplaying": {
+            "title": "🎵 Now Playing",
+            "description": "Shows the currently playing song"
+        },
+        "volume": {
+            "set": "🔊 Volume set to `{volume}%`",
+            "description": "Sets the player volume"
+        }
+    },
+    "music": {
+        "track": {
+            "artist": "🎤 Artist",
+            "duration": "⏱️ Duration",
+            "position": "📊 Position",
+            "requested_by": "👤 Requested by"
+        }
+    }
+}
