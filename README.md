@@ -17,6 +17,11 @@
 
 ## ✨ Features
 
+## 📜 Previous Versions
+
+**Spacyminos (Deprecated Archive)**  
+The legacy Discord music bot project that inspired this monorepo. Archived and unmaintained—use this modern version for production. Key improvements include Turborepo, Next.js 16 dashboard, and enhanced Lavalink integration.[web:6][web:28]
+
 ### 🎵 Music Playback
 - **High-Quality Audio** - Powered by Lavalink for superior sound quality
 - **YouTube Integration** - Direct search and playback using `youtube-sr`
